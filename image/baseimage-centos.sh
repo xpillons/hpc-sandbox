@@ -31,14 +31,11 @@ if [ $? != 0 ]; then
     echo "ERROR: unable to install epel-release"
     exit 1
 fi
-yum install -y nfs-utils jq htop axel
+yum install -y nfs-utils jq htop 
 if [ $? != 0 ]; then
     echo "ERROR: unable to install nfs-utils jq htop"
     exit 1
 fi
-
-# turn off GSS proxy
-sed -i 's/GSS_USE_PROXY="yes"/GSS_USE_PROXY="no"/g' /etc/sysconfig/nfs
 
 # Disable tty requirement for sudo
 sed -i 's/^Defaults[ ]*requiretty/# Defaults requiretty/g' /etc/sudoers
@@ -61,29 +58,6 @@ EOF
 # optimize
 systemctl disable cpupower
 systemctl disable firewalld
-
-install_beegfs_client()
-{
-    echo "*********************************************************"
-    echo "*                                                       *"
-    echo "*           Installing BeeGFS Client                    *" 
-    echo "*                                                       *"
-    echo "*********************************************************"
-	wget -O /etc/yum.repos.d/beegfs-rhel7.repo https://www.beegfs.io/release/beegfs_7/dists/beegfs-rhel7.repo
-	rpm --import https://www.beegfs.io/release/latest-stable/gpg/RPM-GPG-KEY-beegfs
-
-	yum install -y beegfs-client beegfs-helperd beegfs-utils gcc gcc-c++
-    set +e
-	yum install -y "kernel-devel-uname-r == $(uname -r)"
-    set -e
-
-	sed -i 's/^sysMgmtdHost.*/sysMgmtdHost = localhost/g' /etc/beegfs/beegfs-client.conf
-	echo "/beegfs /etc/beegfs/beegfs-client.conf" > /etc/beegfs/beegfs-mounts.conf
-	
-	systemctl daemon-reload
-	systemctl enable beegfs-helperd.service
-	systemctl enable beegfs-client.service
-}
 
 install_mlx_ofed_centos76()
 {

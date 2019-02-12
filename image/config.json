@@ -1,0 +1,22 @@
+{
+    "subscription_id": "NOT-SET",
+    "location": "NOT-SET",
+    "packer": {
+        "executable": "packer",
+        "base_image": "baseimage-centos.sh"
+    },
+    "service_principal": {
+        "tenant_id": "NOT-SET",
+        "client_id": "NOT-SET",
+        "client_secret": "NOT-SET"
+    },
+    "images": {
+        "resource_group": "NOT-SET",
+        "storage_account": "NOT-SET",
+        "name": "centos74",
+        "publisher": "OpenLogic",
+        "offer": "CentOS-HPC",
+        "sku": "7.4",
+        "vm_size": "Standard_h16r"
+    }
+}
