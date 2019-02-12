@@ -36,6 +36,21 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "nfs_ip",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[variables('resourceLocation')]",
+      "properties": {
+        "publicIPAddressVersion": "IPv4",
+        "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes": 4,
+        "dnsSettings": {
+          "domainNameLabel": "[concat('nfs', variables('namingInfix'))]"
+        }
+      },
+      "dependsOn": []
+    },
+    {
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('nfsName')]",
       "apiVersion": "[variables('computeApiVersion')]",
@@ -110,6 +125,9 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'nfs_ip')]"
+              },
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('nfs_subnet'))]"
               },
