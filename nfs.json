@@ -20,7 +20,7 @@
       "maxLength": 32,
       "type": "string",
       "metadata": {
-        "description": "Name of the VNET to create"
+        "description": "Name of the VNET to join"
       }
     }
   },
