@@ -81,10 +81,9 @@ if [ "$exists" == "" ]; then
     echo "Creating storage account for images ($images_storage)"
     az storage account create \
         --name $images_storage \
-        --sku Standard_LRS \
+        --kind StorageV2 \
         --location $location \
         --resource-group $images_rg \
-        --access-tier Hot \
         --output table
     if [ $? != 0 ]; then
         echo "ERROR: Failed to storage account"
@@ -144,7 +143,7 @@ $packer_exe build -timestamp-ui \
     -var image_sku=$image_sku \
     -var vm_size=$vm_size \
     -var storage_account_type=$storage_account_type \
-    -var baseimage=packer/$base_image \
+    -var baseimage=$base_image \
     -var storage_account=$images_storage \
     $packer_build_template \
     | tee $packer_log
