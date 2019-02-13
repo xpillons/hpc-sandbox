@@ -94,7 +94,9 @@ upgrade_lis()
     wget --retry-connrefused --read-timeout=10 https://aka.ms/lis
     tar xvzf lis
     pushd LISISO
-    ./upgrade.sh
+    ./uninstall.sh
+    ./install.sh
+    #yum install hyperv-daemons
     popd
     set -e
 }
@@ -118,7 +120,7 @@ install_lustre()
 
 # update WALA
 /usr/sbin/waagent --version
-yum update -y WALinuxAgent
+#yum update -y WALinuxAgent
 
 # check if running on HB/HC
 VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2017-12-01" | jq -r '.compute.vmSize')
@@ -129,7 +131,6 @@ then
     set +e
     yum install -y numactl
     install_mlx_ofed_centos76
-    upgrade_lis
 
     echo 1 >/proc/sys/vm/zone_reclaim_mode
     echo "vm.zone_reclaim_mode = 1" >> /etc/sysctl.conf
@@ -139,6 +140,7 @@ then
 fi
 
 ifconfig
+upgrade_lis
 
 install_lustre
 
