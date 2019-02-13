@@ -99,6 +99,20 @@ upgrade_lis()
     set -e
 }
 
+install_lustre()
+{
+    yum install -y dkms
+    # if rebuilding the rpm
+    yum install -y http://download.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm
+    yum install -y spl-dkms zfs-dkms
+    yum -y install kernel-devel rpm-build make libtool libselinux-devel
+    rpmbuild --rebuild --without servers https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/SRPMS/lustre-client-dkms-2.10.6-1.el7.src.rpm
+    # otherwise ...
+    yum install -y rpmbuild/RPMS/noarch/lustre-client-dkms-2.10.6-1.el7.centos.noarch.rpm
+    yum install -y https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/RPMS/x86_64/lustre-client-2.10.6-1.el7.x86_64.rpm
+    mkdir /mnt/lustre
+}
+
 # update WALA
 /usr/sbin/waagent --version
 yum update -y WALinuxAgent
@@ -122,5 +136,7 @@ then
 fi
 
 ifconfig
+
+install_lustre
 
 echo "End of base image "
