@@ -120,7 +120,7 @@ install_lustre()
 
 # update WALA
 /usr/sbin/waagent --version
-sed -i -e 's/OS.EnableRDMA=y/OS.EnableRDMA=n/g' /etc/waagent.conf​
+sed -i -e 's/OS.EnableRDMA=y/OS.EnableRDMA=n/g' /etc/waagent.conf
 yum update -y WALinuxAgent
 
 # check if running on HB/HC
