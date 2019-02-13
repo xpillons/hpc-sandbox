@@ -120,7 +120,8 @@ install_lustre()
 
 # update WALA
 /usr/sbin/waagent --version
-#yum update -y WALinuxAgent
+sed -i -e 's/OS.EnableRDMA=y/OS.EnableRDMA=n/g' /etc/waagent.conf​
+yum update -y WALinuxAgent
 
 # check if running on HB/HC
 VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2017-12-01" | jq -r '.compute.vmSize')
