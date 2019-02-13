@@ -101,12 +101,14 @@ upgrade_lis()
 
 install_lustre()
 {
+    KERNEL=$(uname -r)
+    echo $KERNEL
 
     yum install -y dkms
     # if rebuilding the rpm
     yum install -y http://download.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm
     yum install -y spl-dkms zfs-dkms
-    yum -y install kernel-devel rpm-build make libtool libselinux-devel
+    yum -y install kernel-devel-${KERNEL} rpm-build make libtool libselinux-devel
     rpmbuild --rebuild --without servers https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/SRPMS/lustre-client-dkms-2.10.6-1.el7.src.rpm
     # otherwise ...
     yum install -y /root/rpmbuild/RPMS/noarch/lustre-client-dkms-2.10.6-1.el7.centos.noarch.rpm
