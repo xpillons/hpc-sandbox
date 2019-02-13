@@ -140,8 +140,7 @@ then
 fi
 
 ifconfig
-upgrade_lis
-
 install_lustre
 
+upgrade_lis
 echo "End of base image "
