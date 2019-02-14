@@ -168,18 +168,18 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
-# errors=$(grep "ERROR" $packer_log)
-# echo "Testing errors : $errors"
-# if [ "$errors" != "" ]; then
-#     echo "errors while creating the image"
-#     echo "*******************************"
-#     echo $errors
-#     echo "*******************************"
+errors=$(grep -E " ERROR|^ERROR" $packer_log)
+echo "Testing errors : $errors"
+if [ "$errors" != "" ]; then
+    echo "errors while creating the image"
+    echo "*******************************"
+    echo $errors
+    echo "*******************************"
 
-#     echo "Deleting image $app_img_name"
-#     az image delete --name $app_img_name --resource-group $images_rg
-#     exit 1
-# fi
+    echo "Deleting image $app_img_name"
+    az image delete --name $app_img_name --resource-group $images_rg
+    exit 1
+fi
 
 if [ "$storage_account_type" == "Standard_LRS" ]; then
     # get vhd source from the packer output
