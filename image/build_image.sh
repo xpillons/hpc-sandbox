@@ -54,6 +54,11 @@ read_value image_sku ".images.sku"
 read_value vm_size ".images.vm_size"
 read_value packer_exe ".packer.executable"
 read_value base_image ".packer.base_image"
+read_value private_only ".packer.private_only"
+read_value vnet_name ".packer.vnet_name"
+read_value subnet_name ".packer.subnet_name"
+read_value vnet_resource_group ".packer.vnet_resource_group"
+private_only=${private_only,,}
 
 timestamp=$(date +%Y%m%d-%H%M%S)
 
@@ -107,15 +112,22 @@ echo "storage_account_type=$storage_account_type"
 vmsku=$(echo $vm_size | cut -d '_' -f 2)
 app_img_name=$vmsku-$timestamp
 
+private=""
+if [ "$private_only" == "yes" ]; then
+    private="private_"
+fi
+
+managed=""
 case $storage_account_type in
     "Premium_LRS")
-        packer_build_template="build_from_managed.json"
+        managed="managed"
         image_name=$app_img_name
         ;;
     "Standard_LRS")
-        packer_build_template="build_from_unmanaged.json"
+        managed="unmanaged"
         ;;
 esac
+packer_build_template="build_${private}from_${managed}.json"
 echo "packer_build_template=$packer_build_template"
 
 # run packer
@@ -145,6 +157,9 @@ $packer_exe build -timestamp-ui \
     -var storage_account_type=$storage_account_type \
     -var baseimage=$base_image \
     -var storage_account=$images_storage \
+    -var vnet_name=$vnet_name \
+    -var subnet_name=$subnet_name \
+    -var vnet_resource_group=$vnet_resource_group \
     $packer_build_template \
     | tee $packer_log
 

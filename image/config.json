@@ -3,7 +3,11 @@
     "location": "NOT-SET",
     "packer": {
         "executable": "./packer",
-        "base_image": "baseimage-centos.sh"
+        "base_image": "baseimage-centos.sh",
+        "private_only": "",
+        "vnet_name": "",
+        "subnet_name": "",
+        "vnet_resource_group":""
     },
     "service_principal": {
         "tenant_id": "NOT-SET",
