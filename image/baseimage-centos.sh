@@ -94,8 +94,19 @@ upgrade_lis()
     wget --retry-connrefused --read-timeout=10 https://aka.ms/lis
     tar xvzf lis
     pushd LISISO
-    ./uninstall.sh
-    ./install.sh
+    case "$VMSIZE" in
+        *_h16*) 
+            ./uninstall.sh
+            ./install.sh
+            ;;
+        *_hc*)
+            ./install.sh
+            ;;
+        *_hb*)
+            ./install.sh
+            ;;
+    esac
+
     #yum install hyperv-daemons
     popd
     set -e
