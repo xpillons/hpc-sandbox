@@ -62,6 +62,31 @@ private_only=${private_only,,}
 
 timestamp=$(date +%Y%m%d-%H%M%S)
 
+function create_storage()
+{
+    # create storage account for images (if not already there)
+    echo "create storage account for images (if not already there)"
+    exists=$( \
+        az storage account show \
+            --name $images_storage \
+            --resource-group $images_rg \
+            --output tsv \
+    )
+    if [ "$exists" == "" ]; then
+        echo "Creating storage account for images ($images_storage)"
+        az storage account create \
+            --name $images_storage \
+            --kind StorageV2 \
+            --location $location \
+            --resource-group $images_rg \
+            --output table
+        if [ $? != 0 ]; then
+            echo "ERROR: Failed to storage account"
+            exit 1
+        fi
+    fi
+}
+
 # create resource group for images (if not already there)
 echo "create resource group for images (if not already there)"
 exists=$(az group show --name $images_rg --out tsv)
@@ -70,28 +95,6 @@ if [ "$exists" == "" ]; then
     az group create --name $images_rg --location $location --output tsv
     if [ $? != 0 ]; then
         echo "ERROR: Failed to create resource group"
-        exit 1
-    fi
-fi
-
-# create storage account for images (if not already there)
-echo "create storage account for images (if not already there)"
-exists=$( \
-    az storage account show \
-        --name $images_storage \
-        --resource-group $images_rg \
-        --output tsv \
-)
-if [ "$exists" == "" ]; then
-    echo "Creating storage account for images ($images_storage)"
-    az storage account create \
-        --name $images_storage \
-        --kind StorageV2 \
-        --location $location \
-        --resource-group $images_rg \
-        --output table
-    if [ $? != 0 ]; then
-        echo "ERROR: Failed to storage account"
         exit 1
     fi
 fi
@@ -125,6 +128,7 @@ case $storage_account_type in
         ;;
     "Standard_LRS")
         managed="unmanaged"
+        create_storage
         ;;
 esac
 packer_build_template="build_${private}from_${managed}.json"
