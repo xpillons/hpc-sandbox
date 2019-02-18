@@ -133,10 +133,10 @@ install_lustre()
     case "$vm_size" in
         *_h16*) 
             build_lustreRPM
-            kmod-lustre-client=""
+            kmod_lustre_client=""
             ;;
         *)
-            kmod-lustre-client="kmod-lustre-client"
+            kmod_lustre_client="kmod-lustre-client"
             ;;
     esac
 
@@ -148,7 +148,8 @@ baseurl=https://downloads.whamcloud.com/public/lustre/latest-2.10-release/el7.6.
 enabled=1
 gpgcheck=0
 EOF
-    yum install -y lustre-client kmod-lustre-client
+
+    yum install -y lustre-client ${kmod_lustre_client}
     #yum install -y kmod-lustre-client https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/RPMS/x86_64/lustre-client-2.10.6-1.el7.x86_64.rpm
     mkdir /mnt/lustre
 }
