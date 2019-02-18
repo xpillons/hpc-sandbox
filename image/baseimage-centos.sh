@@ -112,7 +112,7 @@ upgrade_lis()
     set -e
 }
 
-install_lustre()
+build_lustreRPM()
 {
     KERNEL=$(uname -r)
     echo $KERNEL
@@ -125,14 +125,44 @@ install_lustre()
     rpmbuild --rebuild --without servers https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/SRPMS/lustre-client-dkms-2.10.6-1.el7.src.rpm
     # otherwise ...
     yum install -y /root/rpmbuild/RPMS/noarch/lustre-client-dkms-2.10.6-1.el7.centos.noarch.rpm
+
+}
+
+install_lustre()
+{
+    case "$vm_size" in
+        *_h16*) 
+            build_lustreRPM
+            ;;
+    esac
     yum install -y https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/RPMS/x86_64/lustre-client-2.10.6-1.el7.x86_64.rpm
     mkdir /mnt/lustre
 }
 
+update_waagent()
+{
+    /usr/sbin/waagent --version
+    # update WALA
+    #yum update -y WALinuxAgent
+    pushd /mnt/resource
+
+    yum install -y python-pip
+    python -m pip install --upgrade pip setuptools wheel
+    wget "https://github.com/Azure/WALinuxAgent/archive/release-2.2.36.zip"
+    unzip release-2.2.36.zip
+    cd WALinuxAgent*
+    python setup.py install --register-service --force
+    sed -i -e 's/# OS.EnableRDMA=y/OS.EnableRDMA=y/g' /etc/waagent.conf
+    #sed -i -e 's/# AutoUpdate.Enabled=y/AutoUpdate.Enabled=y/g' /etc/waagent.conf
+    systemctl restart waagent
+
+    popd
+}
+
 # update WALA
 /usr/sbin/waagent --version
-sed -i -e 's/OS.EnableRDMA=y/OS.EnableRDMA=n/g' /etc/waagent.conf
-yum update -y WALinuxAgent
+update_waagent
+
 
 # check if running on HB/HC
 VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2017-12-01" | jq -r '.compute.vmSize')
@@ -145,7 +175,7 @@ then
     install_mlx_ofed_centos76
 
     echo 1 >/proc/sys/vm/zone_reclaim_mode
-    echo "vm.zone_reclaim_mode = 1" >> /etc/sysctl.conf
+    echo "vm.zone_reclaim_mode = 3" >> /etc/sysctl.conf
     sysctl -p
     
     set -e
