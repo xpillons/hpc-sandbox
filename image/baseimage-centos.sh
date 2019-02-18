@@ -134,7 +134,11 @@ install_lustre()
         *_h16*) 
             build_lustreRPM
             ;;
+        *)
+            yum install -y kmod-lustre-client
+            ;;
     esac
+
     yum install -y https://downloads.whamcloud.com/public/lustre/lustre-2.10.6/el7/client/RPMS/x86_64/lustre-client-2.10.6-1.el7.x86_64.rpm
     mkdir /mnt/lustre
 }
