@@ -185,6 +185,13 @@ if [ "$errors" != "" ]; then
     exit 1
 fi
 
+# check OS storage account type
+img_os_storage=$(az image show -g xps_foo_wus2 --name $app_img_name | jq '.storageProfile.osDisk.storageAccountType')
+if [ "$storage_account_type" != "$img_os_storage" ]; then
+    echo "Wrong image OS storage account. $storage_account_type was expected instead of $img_os_storage"
+    exit 1
+fi
+
 if [ "$storage_account_type" == "Standard_LRS" ]; then
     # get vhd source from the packer output
     vhd_source="$(grep -Po '(?<=OSDiskUri\: )[^$]*' $packer_log)"
