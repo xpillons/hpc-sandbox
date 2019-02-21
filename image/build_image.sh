@@ -141,8 +141,8 @@ version=$($packer_exe --version)
 
 echo "running on packer version $version"
 
-if [ "$version" == "1.3.3" ]; then
-    echo "version 1.3.3 is not supported and have a bug, use 1.3.2 or 1.3.4+"
+if [ "$version" != "1.3.2" ]; then
+    echo "version $version is not supported and have bugs, please use 1.3.2"
     exit 1
 fi
 
@@ -186,7 +186,7 @@ if [ "$errors" != "" ]; then
 fi
 
 # check OS storage account type
-img_os_storage=$(az image show -g xps_foo_wus2 --name $app_img_name | jq '.storageProfile.osDisk.storageAccountType')
+img_os_storage=$(az image show -g xps_foo_wus2 --name $app_img_name | jq -r '.storageProfile.osDisk.storageAccountType')
 if [ "$storage_account_type" != "$img_os_storage" ]; then
     echo "Wrong image OS storage account. $storage_account_type was expected instead of $img_os_storage"
     exit 1
