@@ -52,7 +52,7 @@ test_rg=azcat_$(date "+%Y%m%d-%H%M%S")
 az group create --name $test_rg --location $location
 
 rsaPublicKey=$(cat ~/.ssh/id_rsa.pub)
-vm_name=test_foo
+vm_name=test-foo
 
 az vm create -g $test_rg -n $vm_name --image $image_id --size $vm_size --ssh-key-value @~/.ssh/id_rsa.pub
 
