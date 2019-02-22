@@ -130,7 +130,7 @@ build_lustreRPM()
 
 install_lustre()
 {
-    case "$vm_size" in
+    case "$VMSIZE" in
         *_h16*) 
             build_lustreRPM
             kmod_lustre_client=""
