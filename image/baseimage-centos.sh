@@ -95,10 +95,10 @@ upgrade_lis()
     tar xvzf lis
     pushd LISISO
     case "$VMSIZE" in
-        *_h16*) 
-            ./uninstall.sh
-            ./install.sh
-            ;;
+        # *_h16*) 
+        #     ./uninstall.sh
+        #     ./install.sh
+        #     ;;
         *_hc*)
             ./install.sh
             ;;
