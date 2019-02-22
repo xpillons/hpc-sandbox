@@ -185,13 +185,6 @@ if [ "$errors" != "" ]; then
     exit 1
 fi
 
-# check OS storage account type
-img_os_storage=$(az image show -g $images_rg --name $app_img_name | jq -r '.storageProfile.osDisk.storageAccountType')
-if [ "$storage_account_type" != "$img_os_storage" ]; then
-    echo "Wrong image OS storage account. $storage_account_type was expected instead of $img_os_storage"
-    exit 1
-fi
-
 if [ "$storage_account_type" == "Standard_LRS" ]; then
     # get vhd source from the packer output
     vhd_source="$(grep -Po '(?<=OSDiskUri\: )[^$]*' $packer_log)"
@@ -209,6 +202,13 @@ if [ "$storage_account_type" == "Standard_LRS" ]; then
         echo "ERROR: Failed to create image"
         exit 1
     fi
+fi
+
+# check OS storage account type
+img_os_storage=$(az image show -g $images_rg --name $app_img_name | jq -r '.storageProfile.osDisk.storageAccountType')
+if [ "$storage_account_type" != "$img_os_storage" ]; then
+    echo "Wrong image OS storage account. $storage_account_type was expected instead of $img_os_storage"
+    exit 1
 fi
 
 rm $packer_log
