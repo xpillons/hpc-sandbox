@@ -46,7 +46,8 @@ read_value images_rg ".images.resource_group"
 
 vmsku=$(echo $vm_size | cut -d '_' -f 2)
 
-image_id=$(az image list -g ${images_rg} --query "[?contains(name,'${vmsku}-')].[id]" -o tsv | sort)
+image_id=$(az image list -g ${images_rg} --query "[?contains(name,'${vmsku}-')].[id]" -o tsv | sort | tail -n1)
+echo $image_id
 
 test_rg=azcat_$(date "+%Y%m%d-%H%M%S")
 az group create --name $test_rg --location $location
