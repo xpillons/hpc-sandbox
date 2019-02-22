@@ -186,7 +186,7 @@ if [ "$errors" != "" ]; then
 fi
 
 # check OS storage account type
-img_os_storage=$(az image show -g xps_foo_wus2 --name $app_img_name | jq -r '.storageProfile.osDisk.storageAccountType')
+img_os_storage=$(az image show -g $images_rg --name $app_img_name | jq -r '.storageProfile.osDisk.storageAccountType')
 if [ "$storage_account_type" != "$img_os_storage" ]; then
     echo "Wrong image OS storage account. $storage_account_type was expected instead of $img_os_storage"
     exit 1
