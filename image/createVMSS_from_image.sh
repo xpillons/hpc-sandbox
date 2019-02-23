@@ -55,10 +55,11 @@ az group create --name $test_rg --location $location
 vmssname=foo
 
 az vmss create \
-    -g $test_rg \
-    -n $vmssname \
+    --resource-group $test_rg \
+    --name $vmssname \
     --image $image_id \
     --instance-count 0 \
-    --no-wait \
     --single-placement-group true \
-    --vm-sku $vm_size --ssh-key-value @~/.ssh/id_rsa.pub
+    --vm-sku $vm_size \
+    --ssh-key-value @~/.ssh/id_rsa.pub
+
