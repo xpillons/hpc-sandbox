@@ -42,9 +42,8 @@ export WCOLL=hostlist
 for h in $hosts; do
     echo $h
     scp $script $h:/tmp/$script
-EOF
 done
 
-pdsh sudo bash -c /tmp/$script
+pdsh "sudo bash -c /tmp/$script"
 
 
