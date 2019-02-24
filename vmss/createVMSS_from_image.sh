@@ -62,4 +62,3 @@ az vmss create \
     --single-placement-group true \
     --vm-sku $vm_size \
     --ssh-key-value @~/.ssh/id_rsa.pub
-
