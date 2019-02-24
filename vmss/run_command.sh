@@ -35,4 +35,17 @@ echo "vmss_name=$vmss_name"
 echo "resource_group=$resource_group"
 echo "script=$script"
 
-az vmss list-instance-connection-info --name $vmss_name --resource-group $resource_group --output tsv
+hosts=$(az vmss list-instance-connection-info --name $vmss_name --resource-group $resource_group --output tsv)
+
+rm $vmss_name.config
+
+for h in $hosts; 
+    host=$(echo $h | cut -d':' -f1)
+    port=$(echo $h | cut -d':' -f2)
+    cat <<EOF >>$vmss_name.config
+    Host $host
+        Port $port
+    
+EOF
+done
+
