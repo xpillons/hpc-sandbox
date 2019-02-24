@@ -44,6 +44,6 @@ for h in $hosts; do
     scp $script $h:/tmp/$script
 done
 
-pdsh "sudo bash -c /tmp/$script"
+pdsh "sudo bash /tmp/$script"
 
 
