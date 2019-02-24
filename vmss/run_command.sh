@@ -39,7 +39,8 @@ hosts=$(az vmss list-instance-connection-info --name $vmss_name --resource-group
 
 rm $vmss_name.config
 
-for h in $hosts; 
+for h in $hosts; do
+    echo $h
     host=$(echo $h | cut -d':' -f1)
     port=$(echo $h | cut -d':' -f2)
     cat <<EOF >>$vmss_name.config

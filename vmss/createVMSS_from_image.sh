@@ -59,6 +59,7 @@ az vmss create \
     --name $vmssname \
     --image $image_id \
     --instance-count 0 \
+    --public-ip-per-vm \
     --single-placement-group true \
     --vm-sku $vm_size \
     --ssh-key-value @~/.ssh/id_rsa.pub
