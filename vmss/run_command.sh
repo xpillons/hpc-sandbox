@@ -47,8 +47,9 @@ else
     hosts=$(az vmss list-instances -n $vmss_name -g $resource_group --query "[].osProfile.computerName" --output tsv)
 fi
 
-echo $hosts > hostlist
-export WCOLL=hostlist
+hostlist="$vmss_name.hosts"
+echo $hosts > $hostlist
+export WCOLL=$hostlist
 
 for h in $hosts; do
     echo $h
