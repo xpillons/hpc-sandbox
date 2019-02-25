@@ -39,6 +39,7 @@ shift $(( OPTIND - 1 ));
 echo "vmss_name=$vmss_name"
 echo "resource_group=$resource_group"
 echo "script=$script"
+echo "interface=$interface"
 
 if [ "$interface" == "public" ]; then
     hosts=$(az vmss list-instance-public-ips --name $vmss_name --resource-group $resource_group --query "[].ipAddress" --output tsv)
