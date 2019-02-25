@@ -54,6 +54,20 @@ test_rg=azcat_$(date "+%Y%m%d-%H%M%S")
 az group create --name $test_rg --location $location
 vmssname=foo
 
+# for VMSS in a private network
+# az vmss create \
+#     --resource-group $test_rg \
+#     --name $vmssname \
+#     --image $image_id \
+#     --instance-count 0 \
+#     --lb "" \
+#     --public-ip-address "" \
+#     --single-placement-group true \
+#     --vm-sku $vm_size \
+#     --subnet $subnet_id
+#     --ssh-key-value @~/.ssh/id_rsa.pub
+
+
 az vmss create \
     --resource-group $test_rg \
     --name $vmssname \
