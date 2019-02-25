@@ -59,6 +59,12 @@ EOF
 systemctl disable cpupower
 systemctl disable firewalld
 
+# Retrieve the VM sku
+VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2017-12-01" | jq -r '.compute.vmSize')
+VMSIZE=${VMSIZE,,}
+echo "vmSize is $VMSIZE"
+
+
 install_mlx_ofed_centos76()
 {
     echo "*********************************************************"
@@ -168,9 +174,22 @@ update_waagent()
     unzip release-2.2.36.zip
     cd WALinuxAgent*
     python setup.py install --register-service --force
-    sed -i -e 's/# OS.EnableRDMA=y/OS.EnableRDMA=y/g' /etc/waagent.conf
+
+    case "$VMSIZE" in
+        *_h16*)
+            sed -i -e 's/# OS.EnableRDMA=y/OS.EnableRDMA=n/g' /etc/waagent.conf
+            sed -i -e 's/OS.EnableRDMA=y/OS.EnableRDMA=n/g' /etc/waagent.conf
+            ;;
+        *)
+            sed -i -e 's/# OS.EnableRDMA=y/OS.EnableRDMA=y/g' /etc/waagent.conf
+            sed -i -e 's/OS.EnableRDMA=n/OS.EnableRDMA=y/g' /etc/waagent.conf
+            ;;
+    esac
+
     #sed -i -e 's/# AutoUpdate.Enabled=y/AutoUpdate.Enabled=y/g' /etc/waagent.conf
     systemctl restart waagent
+    /usr/sbin/waagent --version
+    waagent --show-configuration
 
     popd
 }
@@ -180,10 +199,6 @@ update_waagent()
 update_waagent
 
 
-# check if running on HB/HC
-VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2017-12-01" | jq -r '.compute.vmSize')
-VMSIZE=${VMSIZE,,}
-echo "vmSize is $VMSIZE"
 if [ "$VMSIZE" == "standard_hb60rs" ] || [ "$VMSIZE" == "standard_hc44rs" ]
 then
     set +e
