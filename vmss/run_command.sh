@@ -6,11 +6,13 @@ function usage(){
     echo "$me -n: vmss name"
     echo "    -g: resource group"
     echo "    -s: script to run"
+    echo "    -i: run thru public or private interface. Values are [private] (default) or [public]"
     echo "    -h: help"
     echo ""
 }
+interface="private"
 
-while getopts "n: g: s: h" OPTION
+while getopts "n: g: s: i: h" OPTION
 do
     case ${OPTION} in
         n)
@@ -21,6 +23,9 @@ do
             ;;
         s)
         script=$OPTARG
+            ;;
+        i)
+        interface=$OPTARG
             ;;
         h)
         usage
@@ -35,7 +40,12 @@ echo "vmss_name=$vmss_name"
 echo "resource_group=$resource_group"
 echo "script=$script"
 
-hosts=$(az vmss list-instance-public-ips --name $vmss_name --resource-group $resource_group --query "[].ipAddress" --output tsv)
+if [ "$interface" == "public" ]; then
+    hosts=$(az vmss list-instance-public-ips --name $vmss_name --resource-group $resource_group --query "[].ipAddress" --output tsv)
+else
+    hosts=$(az vmss list-instances -n $vmss_name -g $resource_group --query "[].osProfile.computerName" --output tsv)
+fi
+
 echo $hosts > hostlist
 export WCOLL=hostlist
 
