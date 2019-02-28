@@ -170,7 +170,7 @@ update_waagent()
 
     yum install -y python-pip
     python -m pip install --upgrade pip setuptools wheel
-    wget "https://github.com/Azure/WALinuxAgent/archive/release-2.2.36.zip"
+    wget "https://github.com/Azure/WALinuxAgent/archive/v2.2.36.zip"
     unzip release-2.2.36.zip
     cd WALinuxAgent*
     python setup.py install --register-service --force
