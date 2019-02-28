@@ -60,7 +60,7 @@ systemctl disable cpupower
 systemctl disable firewalld
 
 # Retrieve the VM sku
-VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2017-12-01" | jq -r '.compute.vmSize')
+VMSIZE=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2018-04-02" | jq -r '.compute.vmSize')
 VMSIZE=${VMSIZE,,}
 echo "vmSize is $VMSIZE"
 
